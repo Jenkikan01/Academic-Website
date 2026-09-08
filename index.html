@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project TINDIG — CSR Proposal | Daluyan Water Technologies, Inc.</title>
+<meta name="description" content="A four-layer, orbit-verified defense against land subsidence for Hagonoy, Bulacan — from space to barangay.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1c3 4 5 6.5 5 9a5 5 0 1 1-10 0c0-2.5 2-5 5-9z' fill='%232dd4bf'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./css/style.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
+</head>
+<body>
+
+<!-- ======= CHROME (persistent UI) ======= -->
+<div class="wordmark" aria-hidden="true">TINDIG <span>DWT</span></div>
+<div class="progress-bar" aria-hidden="true"><div class="progress-fill" id="progressFill"></div></div>
+<nav class="dot-nav" id="dotNav" aria-label="Slide navigation"></nav>
+<div class="slide-counter" id="slideCounter">01 / 15</div>
+<button class="nav-arrow nav-prev" id="navPrev" aria-label="Previous slide">&#8592;</button>
+<button class="nav-arrow nav-next" id="navNext" aria-label="Next slide">&#8594;</button>
+
+<main class="deck" id="deck">
+
+  <!-- ======= SLIDE 0 · HERO ======= -->
+  <section class="slide slide-hero" data-slide="0" data-title="Hero">
+    <canvas class="hero-particles" id="heroParticles" aria-hidden="true"></canvas>
+    <div class="slide-inner hero-inner">
+      <p class="hero-kicker anim-in">Daluyan Water Technologies, Inc. &mdash; CSR Project Proposal</p>
+      <h1 class="hero-title anim-in">PROJECT<br><span class="teal">TINDIG</span></h1>
+      <p class="hero-sub anim-in">Tactical InSAR-guided Network for Defense against Inundation &amp; Ground-loss</p>
+      <p class="hero-tagline anim-in">&ldquo;Mula Kalawakan hanggang Barangay &mdash; From Space to Barangay.&rdquo;</p>
+      <div class="palo-stats hero-chips anim-in">
+        <span class="stat-chip glass">Hagonoy, Bulacan</span>
+        <span class="stat-chip glass">30 months</span>
+        <span class="stat-chip glass amber">&#8369;24,150,000</span>
+        <span class="stat-chip glass">September 2026</span>
+      </div>
+      <div class="hero-hint anim-in"><span class="hint-key">&rarr;</span> Press to begin</div>
+    </div>
+  </section>
+
+  <!-- ======= SLIDE 1 · THE HIDDEN HAZARD ======= -->
+  <section class="slide" data-slide="1" data-title="The Hidden Hazard">
+    <div class="slide-inner">
+      <p class="slide-kicker anim-in">01 &mdash; The Hidden Hazard</p>
+      <h2 class="slide-title anim-in">The ground itself is sinking</h2>
+      <div class="counter-grid">
+        <div class="counter-card glass anim-in">
+          <div class="counter-value" data-count="109" data-format="int">0</div>
+          <div class="counter-label">mm/yr peak land subsidence in Bulacan, 2014&ndash;2020 &mdash; the fastest ever measured in the Philippines</div>
+          <div class="counter-cite">Sulapas et al., 2024</div>
+        </div>
+        <div class="counter-card glass anim-in">
+          <div class="counter-value" data-count="124.5" data-format="negdec1">0</div>
+          <div class="counter-label">mm/yr recorded near Hagonoy&rsquo;s high-extraction pumping zones</div>
+          <div class="counter-cite">ISPRS Annals, 2026</div>
+        </div>
+        <div class="counter-card glass anim-in">
+          <div class="counter-value" data-count="30" data-format="mult">0</div>
+          <div class="counter-label">faster than global sea-level rise &mdash; the sea is not rising onto Hagonoy; Hagonoy is sinking into the sea</div>
+          <div class="counter-cite">vs ~3.6 mm/yr global mean SLR</div>
+        </div>
+        <div class="counter-card glass anim-in">
+          <div class="counter-value" data-count="88" data-format="pct">0</div>
+          <div class="counter-label">of measured deformation explained by groundwater level + population + built-up volume</div>
+          <div class="counter-cite">peer-reviewed driver analysis</div>
+        </div>
+      </div>
+      <div class="subchart glass anim-in" id="subChart"></div>
+      <p class="slide-note anim-in">Every year the land falls, the floods Hagonoy already knows arrive higher and drain more slowly. This is not a future climate scenario &mdash; it is a measured, millimetre-precision trend.</p>
+    </div>
+  </section>
+
+  <!-- ======= SLIDE 2 · THE CAUSAL CHAIN ======= -->
+  <section class="slide" data-slide="2" data-title="The Causal Chain">
+    <div class="slide-inner">
+      <p class="slide-kicker anim-in">02 &mdash; The Causal Chain</p>
+      <h2 class="slide-title anim-in">Everyone treats the flood. No one treats the cause.</h2>
+      <div class="chain-diagram anim-in">
+        <div class="chain-node glass">
+          <div class="chain-num">CAUSE</div>
+          <div class="chain-name">Groundwater over-extraction</div>
+          <div class="chain-gloss">Wells pump faster than the aquifer refills</div>
+        </div>
+        <div class="chain-link" aria-hidden="true"><span class="pulse-dot"></span><span class="pulse-dot"></span><span class="pulse-dot"></span></div>
+        <div class="chain-node glass">
+          <div class="chain-num">STEP 2</div>
+          <div class="chain-name">Aquifer compaction</div>
+          <div class="chain-gloss">Clay layers squeeze shut &mdash; permanently</div>
+        </div>
+        <div class="chain-link" aria-hidden="true"><span class="pulse-dot"></span><span class="pulse-dot"></span><span class="pulse-dot"></span></div>
+        <div class="chain-node glass">
+          <div class="chain-num">STEP 3</div>
+          <div class="chain-name">Land subsidence</div>
+          <div class="chain-gloss">The ground sinks up to &minus;124.5 mm/yr</div>
+        </div>
+        <div class="chain-link" aria-hidden="true"><span class="pulse-dot"></span><span class="pulse-dot"></span><span class="pulse-dot"></span></div>
+        <div class="chain-node glass">
+          <div class="chain-num">STEP 4</div>
+          <div class="chain-name">Worse tidal flooding</div>
+          <div class="chain-gloss">Same tides, lower land, longer inundation</div>
+        </div>
+        <div class="chain-link" aria-hidden="true"><span class="pulse-dot"></span><span class="pulse-dot"></span><span class="pulse-dot"></span></div>
+        <div class="chain-node glass chain-hazard">
+          <div class="chain-num">STEP 5</div>
+          <div class="chain-name">Saltwater intrusion</div>
+          <div class="chain-gloss">~700 ha of riceland already lost</div>
+        </div>
+      </div>
+      <div class="chain-contrast">
+        <div class="contrast-card glass anim-in">
+          <div class="cc-value">&#8369;9.89B</div>
+          <div class="cc-label">DPWH flood-control allocations in Bulacan&rsquo;s 1st district alone &mdash; dikes and pumps managing floodwater around a coastline whose base elevation is collapsing beneath them.</div>
+        </div>
+        <div class="contrast-card glass anim-in contrast-zero">
+          <div class="cc-value">0</div>
+          <div class="cc-label">dedicated groundwater management plans exist for the province. The response so far has treated everything except the cause.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= SLIDE 3 · THE CLOSED LOOP ======= -->
+  <section class="slide" data-slide="3" data-title="The Closed Loop">
+    <div class="slide-inner">
+      <p class="slide-kicker anim-in">03 &mdash; The System</p>
+      <h2 class="slide-title anim-in">Four layers, one closed loop</h2>
+      <div class="layers-diagram" id="layersDiagram">
+        <div class="layer-card glass anim-in" data-layer="space" tabindex="0">
+          <div class="layer-num">L1 &middot; DIAGNOSE</div>
+          <div class="layer-name">BANTAY-LUPA</div>
+          <div class="layer-sub">the space layer &mdash; &ldquo;land watch&rdquo;</div>
+          <div class="layer-spec">Sentinel-1 PS-InSAR &middot; 6-day revisit &middot; mm-precision &middot; GNSS-anchored</div>
+          <div class="layer-liner">Free radar satellites map exactly where and how fast the ground is sinking &mdash; municipal-wide, every quarter, at zero image cost.</div>
+        </div>
+        <div class="layer-link" aria-hidden="true"><span class="pulse-dot"></span><span class="pulse-dot"></span><span class="pulse-dot"></span></div>
+        <div class="layer-card glass anim-in" data-layer="ground" tabindex="0">
+          <div class="layer-num">L2 &middot; MEASURE</div>
+          <div class="layer-name">BANTAY-TUBIG</div>
+          <div class="layer-sub">the ground layer &mdash; &ldquo;water watch&rdquo;</div>
+          <div class="layer-spec">~40 LoRa nodes &middot; 6 monitoring wells &middot; 2–3 gateways + public network</div>
+          <div class="layer-liner">Solar-powered piezometers, flow meters and salinity sensors give the aquifer a set of vital signs, streamed over LoRaWAN.</div>
+        </div>
+        <div class="layer-link" aria-hidden="true"><span class="pulse-dot"></span><span class="pulse-dot"></span><span class="pulse-dot"></span></div>
+        <div class="layer-card glass anim-in" data-layer="ai" tabindex="0">
+          <div class="layer-num">L3 &middot; PREDICT</div>
+          <div class="layer-name">UTAK-TUBIG</div>
+          <div class="layer-sub">the AI layer &mdash; &ldquo;water mind&rdquo;</div>
+          <div class="layer-spec">MODFLOW 6 &middot; RF/XGBoost &middot; LSTM &middot; 100% open-source</div>
+          <div class="layer-liner">Physics + machine learning fuse both layers into a defensible, barangay-level Extraction Budget &mdash; how much pumping is safe.</div>
+        </div>
+        <div class="layer-link" aria-hidden="true"><span class="pulse-dot"></span><span class="pulse-dot"></span><span class="pulse-dot"></span></div>
+        <div class="layer-card glass anim-in" data-layer="action" tabindex="0">
+          <div class="layer-num">L4 &middot; TREAT</div>
+          <div class="layer-name">SIBOL</div>
+          <div class="layer-sub">the action layer &mdash; &ldquo;new growth&rdquo;</div>
+          <div class="layer-spec">2 injection wells &middot; infiltration basin &middot; 8 rainwater retrofits</div>
+          <div class="layer-liner">Managed aquifer recharge, rainwater harvesting and community water banking put water back &mdash; and the loop closes.</div>
+        </div>
+      </div>
+      <div class="loop-return glass anim-in">
+        <span class="loop-icon" aria-hidden="true">&#8635;</span>
+        <span><strong>Then back to orbit.</strong> Every peso of action is re-measured by Sentinel-1 &mdash; space verifies what the ground reports, and the loop repeats until the sinking slows.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= SLIDE 4 · 3D BANTAY-LUPA ======= -->
+  <section class="slide slide-3d" data-slide="4" data-title="BANTAY-LUPA" data-model="satellite">
+    <div class="slide-inner viewer-layout">
+      <div class="viewer-copy">
+        <p class="slide-kicker anim-in">04 &mdash; Layer 1 &middot; Space</p>
+        <h2 class="slide-title anim-in">BANTAY-LUPA</h2>
+        <p class="viewer-desc anim-in">Free Sentinel-1 radar imagery becomes a continuous municipal subsidence map. Persistent-scatterer InSAR tracks thousands of measurement points to millimetre precision; a GNSS reference station anchors every pixel to surveyed truth.</p>
+        <div class="palo-stats anim-in">
+          <span class="stat-chip glass">&#8369;0 image cost <em>ESA Copernicus</em></span>
+          <span class="stat-chip glass">6-day revisit</span>
+          <span class="stat-chip glass">mm-precision</span>
+          <span class="stat-chip glass amber">quarterly municipal bulletins</span>
+        </div>
+        <div class="parts-panel glass anim-in">
+          <div class="parts-title">Parts &amp; hotspots</div>
+          <ul class="parts-list">
+            <li>C-band SAR antenna &mdash; images through cloud, day and night</li>
+            <li>GNSS ground station &mdash; u-blox ZED-F9P + NAMRIA PageNET</li>
+            <li>PS-InSAR measurement points &mdash; the sinking zones, mapped</li>
+          </ul>
+        </div>
+      </div>
+      <div class="viewer-stage anim-in">
+        <div class="viewer-mount" id="viewer-satellite"></div>
+        <div class="viewer-fallback glass" hidden>
+          <div class="fallback-icon">3D</div>
+          <p>Interactive 3D model unavailable &mdash; WebGL or model module not loaded.</p>
+          <p class="fallback-sub">The parts list on the left describes the full system.</p>
+        </div>
+        <div class="viewer-controls">
+          <button class="viewer-btn" data-action="explode">Explode</button>
+          <input class="viewer-slider" type="range" min="0" max="100" value="0" aria-label="Explode amount">
+          <span class="viewer-hint">drag to rotate</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= SLIDE 5 · 3D BANTAY-TUBIG ======= -->
+  <section class="slide slide-3d" data-slide="5" data-title="BANTAY-TUBIG" data-model="ground-station">
+    <div class="slide-inner viewer-layout">
+      <div class="viewer-copy">
+        <p class="slide-kicker anim-in">05 &mdash; Layer 2 &middot; Ground</p>
+        <h2 class="slide-title anim-in">BANTAY-TUBIG</h2>
+        <p class="viewer-desc anim-in">The aquifer gets vital signs. Solar-powered piezometers watch the water table fall and recover; salinity sensors stand guard against the saltwater front; every reading hops over LoRaWAN to the municipal server &mdash; no grid power, no cell plan.</p>
+        <div class="palo-stats anim-in">
+          <span class="stat-chip glass">~40 sensor nodes</span>
+          <span class="stat-chip glass">6 monitoring wells</span>
+          <span class="stat-chip glass">2–3 gateways + public network</span>
+          <span class="stat-chip glass amber">&ge;95% uptime target</span>
+        </div>
+        <div class="parts-panel glass anim-in">
+          <div class="parts-title">Parts &amp; hotspots</div>
+          <ul class="parts-list">
+            <li>Piezometer + Solinst-class reference logger</li>
+            <li>Dragino LoRa node, solar kit &amp; antenna</li>
+            <li>EC / salinity sensor at the water table</li>
+            <li>LoRaWAN gateway &mdash; Packetworx or DOST-ASTI arQ</li>
+          </ul>
+        </div>
+      </div>
+      <div class="viewer-stage anim-in">
+        <div class="viewer-mount" id="viewer-ground-station"></div>
+        <div class="viewer-fallback glass" hidden>
+          <div class="fallback-icon">3D</div>
+          <p>Interactive 3D model unavailable &mdash; WebGL or model module not loaded.</p>
+          <p class="fallback-sub">The parts list on the left describes the full system.</p>
+        </div>
+        <div class="viewer-controls">
+          <button class="viewer-btn" data-action="explode">Explode</button>
+          <input class="viewer-slider" type="range" min="0" max="100" value="0" aria-label="Explode amount">
+          <span class="viewer-hint">drag to rotate</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= SLIDE 6 · 3D UTAK-TUBIG ======= -->
+  <section class="slide slide-3d" data-slide="6" data-title="UTAK-TUBIG" data-model="ai-core">
+    <div class="slide-inner viewer-layout">
+      <div class="viewer-copy">
+        <p class="slide-kicker anim-in">06 &mdash; Layer 3 &middot; AI</p>
+        <h2 class="slide-title anim-in">UTAK-TUBIG</h2>
+        <p class="viewer-desc anim-in">The Extraction Budget engine. A MODFLOW 6 physics core simulates the aquifer cell by cell; machine learning zones the risk and forecasts next season; the output is one defensible number per barangay &mdash; how much pumping is safe &mdash; pushed by dashboard and SMS.</p>
+        <div class="palo-stats anim-in">
+          <span class="stat-chip glass">first Budget <em>Month 18</em></span>
+          <span class="stat-chip glass">quarterly reissue</span>
+          <span class="stat-chip glass">AUC 0.99 <em>literature benchmark</em></span>
+          <span class="stat-chip glass amber">100% open-source &mdash; &#8369;0 licenses</span>
+        </div>
+        <div class="parts-panel glass anim-in">
+          <div class="parts-title">Parts &amp; hotspots</div>
+          <ul class="parts-list">
+            <li>MODFLOW 6 physics core &mdash; USGS public domain</li>
+            <li>ML forecasting &mdash; RF/XGBoost zonation + LSTM</li>
+            <li>Seasonal Extraction Budget &mdash; dashboard + SMS</li>
+          </ul>
+        </div>
+      </div>
+      <div class="viewer-stage anim-in">
+        <div class="viewer-mount" id="viewer-ai-core"></div>
+        <div class="viewer-fallback glass" hidden>
+          <div class="fallback-icon">3D</div>
+          <p>Interactive 3D model unavailable &mdash; WebGL or model module not loaded.</p>
+          <p class="fallback-sub">The parts list on the left describes the full system.</p>
+        </div>
+        <div class="viewer-controls">
+          <button class="viewer-btn" data-action="explode">Explode</button>
+          <input class="viewer-slider" type="range" min="0" max="100" value="0" aria-label="Explode amount">
+          <span class="viewer-hint">drag to rotate</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= SLIDE 7 · 3D SIBOL ======= -->
+  <section class="slide slide-3d" data-slide="7" data-title="SIBOL" data-model="recharge">
+    <div class="slide-inner viewer-layout">
+      <div class="viewer-copy">
+        <p class="slide-kicker anim-in">07 &mdash; Layer 4 &middot; Action</p>
+        <h2 class="slide-title anim-in">SIBOL</h2>
+        <p class="viewer-desc anim-in">Put the water back. Injection wells push filtered water into the aquifer, school roofs harvest the monsoon into tanks and an infiltration basin, and Community Water Banking turns conservation into a livelihood &mdash; run by 12 paid Bantay Balon technicians.</p>
+        <div class="palo-stats anim-in">
+          <span class="stat-chip glass">&ge;150,000 m&sup3;/yr metered recharge</span>
+          <span class="stat-chip glass">vs ~9M m&sup3;/yr extraction <em>honest ratio</em></span>
+          <span class="stat-chip glass amber">Shanghai precedent: 12.7 &rarr; 1.3 mm/yr</span>
+        </div>
+        <div class="parts-panel glass anim-in">
+          <div class="parts-title">Parts &amp; hotspots</div>
+          <ul class="parts-list">
+            <li>2 injection wells with filtration headworks</li>
+            <li>Infiltration basin &mdash; monsoon soak-away</li>
+            <li>8 school/LGU rainwater retrofits</li>
+            <li>Recovery piezometer &mdash; the proof point</li>
+          </ul>
+        </div>
+      </div>
+      <div class="viewer-stage anim-in">
+        <div class="viewer-mount" id="viewer-recharge"></div>
+        <div class="viewer-fallback glass" hidden>
+          <div class="fallback-icon">3D</div>
+          <p>Interactive 3D model unavailable &mdash; WebGL or model module not loaded.</p>
+          <p class="fallback-sub">The parts list on the left describes the full system.</p>
+        </div>
+        <div class="viewer-controls">
+          <button class="viewer-btn" data-action="explode">Explode</button>
+          <input class="viewer-slider" type="range" min="0" max="100" value="0" aria-label="Explode amount">
+          <span class="viewer-hint">drag to rotate</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= SLIDE 8 · VERIFICATION FROM ORBIT ======= -->
+  <section class="slide" data-slide="8" data-title="Verification from Orbit">
+    <div class="slide-inner">
+      <p class="slide-kicker anim-in">08 &mdash; Accountability</p>
+      <h2 class="slide-title anim-in">The first CSR outcome auditable from orbit</h2>
+      <div class="verify-layout">
+        <div class="verify-stage glass anim-in">
+          <canvas id="orbitCanvas"></canvas>
+        </div>
+        <div class="verify-side">
+          <div class="verify-card glass anim-in">
+            <strong>The commitment</strong>
+            <span>&ge;25% reduction in subsidence velocity in the pilot barangays by Month 30, measured against the Month 1&ndash;6 baseline.</span>
+          </div>
+          <div class="verify-card glass anim-in">
+            <strong>The independence</strong>
+            <span>Measured by Sentinel-1 &mdash; a constellation the proponent does not control &mdash; re-analyzed by UP academic partners DWT does not employ, anchored by NAMRIA PageNET GNSS.</span>
+          </div>
+          <div class="verify-card glass anim-in">
+            <strong>The contrast</strong>
+            <span>Mainstream water CSR reports volumetric &ldquo;replenishment&rdquo; claims no third party can audit. TINDIG&rsquo;s metric is ground movement, observable by anyone with the data.</span>
+          </div>
+        </div>
+      </div>
+      <p class="slide-note anim-in">Subsidence defense becomes the first CSR category whose claimed outcome can be independently observed from space &mdash; a quarterly, public, municipal-wide receipt.</p>
+    </div>
+  </section>
+
+  <!-- ======= SLIDE 9 · BENEFICIARIES ======= -->
+  <section class="slide" data-slide="9" data-title="Beneficiaries">
+    <div class="slide-inner">
+      <p class="slide-kicker anim-in">09 &mdash; Beneficiaries</p>
+      <h2 class="slide-title anim-in">Who stands on steadier ground</h2>
+      <div class="counter-grid">
+        <div class="counter-card glass anim-in">
+          <div class="counter-value" data-count="5000" data-format="tilde">0</div>
+          <div class="counter-label">direct residents in the two pilot barangays &mdash; Tibaguin (3,300) + Pugad (1,636) candidates</div>
+          <div class="counter-cite">2020 Census of Population &amp; Housing</div>
+        </div>
+        <div class="counter-card glass anim-in">
+          <div class="counter-value" data-count="133448" data-format="int">0</div>
+          <div class="counter-label">Hagonoy residents covered by municipal-wide satellite monitoring</div>
+          <div class="counter-cite">PSA, 2020 CPH</div>
+        </div>
+        <div class="counter-card glass anim-in">
+          <div class="counter-value" data-count="3044" data-format="int">0</div>
+          <div class="counter-label">fisherfolk households on the front line &mdash; 2,492 capture fishers + 552 fish farmers, 4,677.5 ha of fishponds</div>
+          <div class="counter-cite">municipal fisheries profile</div>
+        </div>
+        <div class="counter-card glass anim-in">
+          <div class="counter-value" data-count="181" data-format="peso-int">0</div>
+          <div class="counter-label">per protected resident &mdash; one-time, for a permanent defensive capability</div>
+          <div class="counter-cite">&#8369;24.15M &divide; 133,448 residents</div>
+        </div>
+      </div>
+      <div class="table-wrap glass anim-in">
+        <table class="data-table">
+          <thead>
+            <tr><th>Group</th><th>Reach</th><th>What changes for them</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Pilot barangay residents</td><td>~5,000</td><td>Slower sinking, earlier warning, recharged wells</td></tr>
+            <tr><td>Municipality of Hagonoy</td><td>133,448 residents &middot; 33,922 households</td><td>Quarterly subsidence bulletins + a groundwater budget</td></tr>
+            <tr><td>Fisheries sector</td><td>3,044 workers &middot; 4,677.5 ha ponds</td><td>Brackish-water balance defended against salinity swings</td></tr>
+            <tr><td>Bantay Balon technicians</td><td>12 paid local jobs</td><td>&ldquo;Well guardians&rdquo; trained, certified, and salaried</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= SLIDE 10 · BUDGET ======= -->
+  <section class="slide" data-slide="10" data-title="Budget">
+    <div class="slide-inner">
+      <p class="slide-kicker anim-in">10 &mdash; The Investment</p>
+      <h2 class="slide-title anim-in">&#8369;24,150,000, anchored to Philippine procurement records</h2>
+      <div class="budget-layout">
+        <div class="budget-chart glass anim-in" id="budgetChart"></div>
+        <div class="budget-side">
+          <div class="budget-total glass anim-in">
+            <div class="bt-label">Total investment &middot; 30 months</div>
+            <div class="bt-value">&#8369;24,150,000</div>
+            <div class="bt-sub">Fully funded by Daluyan Water Technologies, Inc. as its flagship CSR investment. Every line is anchored to local market prices and PH procurement records.</div>
+          </div>
+          <div class="budget-chip glass anim-in">
+            <div class="bc-value">&#8369;0</div>
+            <div class="bc-label">software license cost &mdash; Sentinel-1, SNAP/MintPy, MODFLOW 6 and the entire ML stack are free and open</div>
+          </div>
+          <div class="budget-chip glass anim-in">
+            <div class="bc-value">&#8369;181</div>
+            <div class="bc-label">per protected resident &mdash; one-time, for a multi-year defensive capability</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= SLIDE 11 · TIMELINE ======= -->
+  <section class="slide" data-slide="11" data-title="Timeline">
+    <div class="slide-inner">
+      <p class="slide-kicker anim-in">11 &mdash; Timeline</p>
+      <h2 class="slide-title anim-in">Thirty months, verified every quarter from orbit</h2>
+      <div class="gantt-wrap glass anim-in" id="ganttChart"></div>
+      <div class="impact-row anim-in">
+        <span class="impact-chip glass teal-chip"><strong>M18</strong> first Extraction Budget issued</span>
+        <span class="impact-chip glass teal-chip"><strong>M24</strong> first recharge online + groundwater ordinance</span>
+        <span class="impact-chip glass teal-chip"><strong>M30</strong> orbit-verified impact report</span>
+        <span class="impact-chip glass amber-chip"><strong>KPI</strong> &ge;25% slower subsidence by M30</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= SLIDE 12 · TECH STACK & PROVENANCE ======= -->
+  <section class="slide" data-slide="12" data-title="Tech Stack &amp; Provenance">
+    <div class="slide-inner">
+      <p class="slide-kicker anim-in">12 &mdash; Tech Stack &amp; Provenance</p>
+      <h2 class="slide-title anim-in">Open where possible, local where it matters</h2>
+      <div class="table-wrap glass anim-in">
+        <table class="data-table tech-table">
+          <thead>
+            <tr><th>Technology</th><th>Function</th><th>Origin</th><th>Cost class</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Sentinel-1 C-band SAR</td><td>Spaceborne subsidence mapping</td><td><span class="origin-open">Open</span> &middot; ESA Copernicus</td><td>Free</td></tr>
+            <tr><td>SNAP / MintPy / LiCSBAS</td><td>PS-InSAR processing chain</td><td><span class="origin-open">Open</span></td><td>Free</td></tr>
+            <tr><td>ASF HyP3</td><td>On-demand SAR processing</td><td><span class="origin-open">Open</span> &middot; NASA/ASF</td><td>Free</td></tr>
+            <tr><td>u-blox ZED-F9P GNSS</td><td>Geodetic ground truth</td><td><span class="origin-import">Imported</span> modules, local integration</td><td>&#8369;30&ndash;70k / station</td></tr>
+            <tr><td>Solinst Levelogger 5</td><td>Reference water-level logging</td><td><span class="origin-import">Imported</span></td><td>~&#8369;52k landed</td></tr>
+            <tr><td>Dragino LoRa nodes</td><td>Field telemetry (~40 nodes)</td><td><span class="origin-import">Imported</span> retail</td><td>&#8369;5&ndash;10k / node</td></tr>
+            <tr><td>Packetworx / DOST-ASTI arQ</td><td>LoRaWAN backhaul</td><td><span class="origin-local">Local / indigenous</span></td><td>Low</td></tr>
+            <tr><td>Solar kits + LiFePO4</td><td>Off-grid power</td><td><span class="origin-local">Local</span></td><td>&#8369;8&ndash;20k / site</td></tr>
+            <tr><td>MODFLOW 6</td><td>Groundwater physics engine</td><td><span class="origin-open">Open</span> &middot; USGS public domain</td><td>Free</td></tr>
+            <tr><td>RF / XGBoost / LSTM stack</td><td>Zonation &amp; forecasting</td><td><span class="origin-open">Open</span></td><td>Free</td></tr>
+            <tr><td>Dashboard + SMS gateway</td><td>Bulletins &amp; alerts</td><td><span class="origin-local">Local</span> development</td><td>Low</td></tr>
+            <tr><td>MAR civil works</td><td>Injection wells &amp; basin</td><td><span class="origin-local">Local</span> contractors</td><td>Capex</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="slide-note anim-in">The pattern is deliberate: free global science, affordable imported sensors, Filipino integration and labor &mdash; so the Playbook costs almost nothing to copy.</p>
+    </div>
+  </section>
+
+  <!-- ======= SLIDE 13 · WHY IT WINS ======= -->
+  <section class="slide" data-slide="13" data-title="Why It Wins">
+    <div class="slide-inner">
+      <p class="slide-kicker anim-in">13 &mdash; Why It Wins</p>
+      <h2 class="slide-title anim-in">A first, with a moat of evidence</h2>
+      <div class="win-grid">
+        <div class="win-card glass anim-in">
+          <div class="win-num">01</div>
+          <div class="win-head">The first CSR of its kind</div>
+          <div class="win-body">Every documented subsidence-defense success &mdash; Bangkok, Shanghai &mdash; is a government program. TINDIG is the first corporate CSR dedicated to the hazard itself.</div>
+        </div>
+        <div class="win-card glass anim-in">
+          <div class="win-num">02</div>
+          <div class="win-head">The industry owns its externality</div>
+          <div class="win-body">Extraction-driven ground loss is, scientifically, the water sector&rsquo;s own footprint. A water-technology firm repairing it is not charity &mdash; it is accountability.</div>
+        </div>
+        <div class="win-card glass anim-in">
+          <div class="win-num">03</div>
+          <div class="win-head">Complement, not compete</div>
+          <div class="win-body">The &#8369;24.4B Bulacan Bulk Water Supply Project shifts demand to surface water. TINDIG is the aquifer&rsquo;s caretaker across that transition &mdash; measuring the recovery the big project hopes to cause.</div>
+        </div>
+        <div class="win-card glass anim-in">
+          <div class="win-num">04</div>
+          <div class="win-head">Zero-license replication</div>
+          <div class="win-body">The TINDIG Playbook packages the entire method on free tools &mdash; a copy-paste path for every sinking delta LGU the national InSAR assessment has already mapped.</div>
+        </div>
+      </div>
+      <div class="impact-row anim-in">
+        <span class="impact-chip glass teal-chip"><strong>SDG 6</strong> Clean Water</span>
+        <span class="impact-chip glass teal-chip"><strong>SDG 11</strong> Sustainable Cities</span>
+        <span class="impact-chip glass teal-chip"><strong>SDG 13</strong> Climate Action</span>
+        <span class="impact-chip glass amber-chip"><strong>SDG 17</strong> Partnerships</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= SLIDE 14 · CLOSE ======= -->
+  <section class="slide" data-slide="14" data-title="Close">
+    <div class="slide-inner">
+      <p class="slide-kicker anim-in">14 &mdash; The Ask</p>
+      <h2 class="slide-title anim-in">Stand watch over the ground itself</h2>
+      <p class="closing-line anim-in">If Hagonoy can show that one company can measurably slow the sinking of a town, then every delta community in the Philippines gains not just a precedent &mdash; but a defender standing watch over the ground itself.</p>
+      <div class="palo-stats anim-in">
+        <span class="stat-chip glass">4 layers &middot; one closed loop</span>
+        <span class="stat-chip glass">30 months</span>
+        <span class="stat-chip glass amber">&#8369;24,150,000</span>
+        <span class="stat-chip glass">&ge;25% slower subsidence, verified from orbit</span>
+        <span class="stat-chip glass">&#8369;181 per protected resident</span>
+      </div>
+      <p class="salamat anim-in">Tindig tayo. &mdash; Let us stand firm.</p>
+      <p class="slide-note anim-in">Daluyan Water Technologies, Inc. &middot; Project TINDIG CSR Proposal &middot; Hagonoy, Bulacan &middot; September 2026</p>
+    </div>
+  </section>
+
+</main>
+
+<script type="module" src="./js/main.js"></script>
+</body>
+</html>
