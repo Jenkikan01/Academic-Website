@@ -5,9 +5,9 @@
    All figures from the TINDIG proposal document.
    ============================================================ */
 
-const TEAL = "#2dd4bf";
-const BLUE = "#38bdf8";
-const AMBER = "#f59e0b";
+const TEAL = "#68ff8e";
+const BLUE = "#6cdfff";
+const AMBER = "#f3b36b";
 const RED = "#ef4444";
 const INK = "#e7f2f0";
 const INK_DIM = "#9db8b3";
@@ -158,7 +158,7 @@ export function renderSubsidence(container) {
       ctx.lineTo(X(f.year) + 6, cy - 6);
       ctx.closePath();
       ctx.fill();
-      ctx.fillStyle = "rgba(245,158,11,0.85)";
+      ctx.fillStyle = "rgba(243,179,107,0.85)";
       ctx.font = "9.5px Inter, sans-serif";
       ctx.fillText(f.label, X(f.year), cy - 22);
       ctx.font = "10.5px Inter, sans-serif";

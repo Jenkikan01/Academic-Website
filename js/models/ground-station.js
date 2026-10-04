@@ -11,16 +11,16 @@ const COL = {
   aquifer: 0x2b6d8f,
   deep: 0x1d4a63,
   pvc: 0xe8ecee,
-  waterCol: 0x38bdf8,
+  waterCol: 0x6cdfff,
   pole: 0x3d464c,
   panel: 0x1e3a5f,
   panelFrame: 0x141a1e,
   enclosure: 0x2c3a3d,
   antenna: 0x101516,
   gwBody: 0xe8ecee,
-  teal: 0x2dd4bf,
-  amber: 0xf59e0b,
-  salt: 0xf59e0b,
+  teal: 0x68ff8e,
+  amber: 0xf3b36b,
+  salt: 0xf3b36b,
 };
 
 function std(color, opts = {}) {

@@ -1,12 +1,15 @@
 /* ============================================================
    PROJECT TINDIG — Deck Engine (main.js)
    Navigation, progress, entrance animations, counters,
-   hero particle field, and per-slide lifecycle orchestration.
+   Matrix worker FX, and per-slide lifecycle orchestration.
    ============================================================ */
 
 import { initViewers, activateViewer, deactivateViewers } from "./viewer.js";
 import { initOrbitVerification } from "./mesh-anim.js";
 import { renderBudget, renderGantt, renderSubsidence } from "./charts.js";
+import { initMatrixRain } from "./matrix-rain.js";
+
+document.body.classList.remove("no-js");
 
 const slides = Array.from(document.querySelectorAll(".slide"));
 const TOTAL = slides.length;
@@ -14,10 +17,13 @@ let current = 0;
 let transitioning = false;
 
 const progressFill = document.getElementById("progressFill");
-const slideCounter = document.getElementById("slideCounter");
 const dotNav = document.getElementById("dotNav");
 const navPrev = document.getElementById("navPrev");
 const navNext = document.getElementById("navNext");
+const counterCurrent = document.getElementById("counterCurrent");
+const routeSweep = document.getElementById("routeSweep");
+const routeLabel = document.getElementById("routeLabel");
+let routeTimer = null;
 
 const hasGSAP = () => typeof window.gsap !== "undefined";
 const pad2 = (n) => String(n).padStart(2, "0");
@@ -29,10 +35,24 @@ slides.forEach((slide, i) => {
   const btn = document.createElement("button");
   btn.type = "button";
   btn.setAttribute("aria-label", `Go to slide ${i + 1}: ${slide.dataset.title || ""}`);
+  btn.dataset.title = slide.dataset.title || `FRAME ${pad2(i + 1)}`;
   btn.addEventListener("click", () => goTo(i));
   dotNav.appendChild(btn);
 });
 const dots = Array.from(dotNav.children);
+
+/* ------------------------------------------------------------
+   Cinematic routing flash
+   ------------------------------------------------------------ */
+function triggerRouteSweep(index) {
+  if (!routeSweep || !routeLabel) return;
+  routeLabel.textContent = `RE-ROUTING // SECTOR ${pad2(index + 1)} // ${slides[index].dataset.title || "FRAME"}`;
+  document.body.classList.remove("is-jumping");
+  void routeSweep.offsetWidth;
+  document.body.classList.add("is-jumping");
+  if (routeTimer) window.clearTimeout(routeTimer);
+  routeTimer = window.setTimeout(() => document.body.classList.remove("is-jumping"), 620);
+}
 
 /* ------------------------------------------------------------
    Core navigation
@@ -49,16 +69,21 @@ function goTo(index, opts = {}) {
   // Lifecycle: leave
   deactivateViewers(prev);
   orbitAnim.setActive(index === 8);
-  heroParticles.setActive(index === 0);
   prev.classList.remove("active");
 
   current = index;
   next.classList.add("active");
+  triggerRouteSweep(index);
 
   // Chrome
-  dots.forEach((d, i) => d.classList.toggle("active", i === index));
+  dots.forEach((d, i) => {
+    const active = i === index;
+    d.classList.toggle("active", active);
+    if (active) d.setAttribute("aria-current", "step");
+    else d.removeAttribute("aria-current");
+  });
   progressFill.style.width = `${(index / (TOTAL - 1)) * 100}%`;
-  slideCounter.textContent = `${pad2(index + 1)} / ${TOTAL}`;
+  if (counterCurrent) counterCurrent.textContent = pad2(index + 1);
   navPrev.disabled = index === 0;
   navNext.disabled = index === TOTAL - 1;
 
@@ -102,6 +127,10 @@ function runEntranceAnimations(slide) {
   items.forEach((el) => el.classList.remove("in", "no-anim"));
   // Force reflow so transitions replay on re-entry
   void slide.offsetWidth;
+  if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+    items.forEach((el) => el.classList.add("no-anim"));
+    return;
+  }
 
   if (hasGSAP()) {
     items.forEach((el, i) => {
@@ -169,92 +198,143 @@ function runCounters(slide) {
   });
 }
 
+/* Matrix rain lives in a dedicated worker (matrix-rain.js). */
+
 /* ------------------------------------------------------------
-   Hero particle network (cheap 2D canvas, only on slide 0)
+   Terminal command deck — local slide search, no network calls
    ------------------------------------------------------------ */
-const heroParticles = (() => {
-  const canvas = document.getElementById("heroParticles");
-  const ctx = canvas.getContext("2d");
-  let particles = [];
-  let rafId = null;
-  let active = false;
-  let W = 0, H = 0;
+const commandOverlay = document.getElementById("commandOverlay");
+const commandInput = document.getElementById("commandInput");
+const commandResults = document.getElementById("commandResults");
+const commandOpen = document.getElementById("commandOpen");
+let commandActive = 0;
+let commandMatches = [];
 
-  function resize() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    W = canvas.clientWidth; H = canvas.clientHeight;
-    canvas.width = W * dpr; canvas.height = H * dpr;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    seed();
+function paintCommandResults(query = "") {
+  if (!commandResults) return;
+  const needle = query.trim().toLowerCase();
+  commandMatches = slides
+    .map((slide, index) => ({ slide, index, title: slide.dataset.title || `Slide ${index + 1}` }))
+    .filter(({ title, index, slide }) => !needle || `${title} ${index + 1} ${pad2(index + 1)} ${slide.dataset.model || ""} ${slide.textContent}`.toLowerCase().includes(needle));
+  commandActive = 0;
+  commandResults.replaceChildren();
+
+  if (!commandMatches.length) {
+    const empty = document.createElement("p");
+    empty.className = "command-empty";
+    empty.textContent = "NO MATCH // Try a slide title, number, or layer name.";
+    commandResults.appendChild(empty);
+    return;
   }
 
-  function seed() {
-    const count = Math.min(90, Math.floor((W * H) / 16000));
-    particles = Array.from({ length: count }, () => ({
-      x: Math.random() * W,
-      y: Math.random() * H,
-      vx: (Math.random() - 0.5) * 0.35,
-      vy: (Math.random() - 0.5) * 0.35,
-      r: Math.random() * 1.6 + 0.6,
-    }));
+  commandMatches.forEach(({ index, title }, resultIndex) => {
+    const option = document.createElement("button");
+    option.type = "button";
+    option.id = `command-option-${index}`;
+    option.className = "command-option";
+    option.setAttribute("role", "option");
+    option.setAttribute("aria-selected", resultIndex === commandActive ? "true" : "false");
+    option.innerHTML = `<span class="command-option-index">${pad2(index + 1)}</span><span class="command-option-title"></span><span class="command-option-action">JUMP ↗</span>`;
+    option.querySelector(".command-option-title").textContent = title;
+    option.addEventListener("mouseenter", () => setCommandActive(resultIndex));
+    option.addEventListener("click", () => {
+      goTo(index, { force: true });
+      closeCommand();
+    });
+    commandResults.appendChild(option);
+  });
+  syncCommandActive();
+}
+
+function syncCommandActive() {
+  const options = Array.from(commandResults?.querySelectorAll(".command-option") || []);
+  options.forEach((option, index) => {
+    option.classList.toggle("is-selected", index === commandActive);
+    option.setAttribute("aria-selected", index === commandActive ? "true" : "false");
+  });
+  if (options[commandActive]) {
+    commandInput?.setAttribute("aria-activedescendant", options[commandActive].id);
+    options[commandActive].scrollIntoView({ block: "nearest" });
+  } else {
+    commandInput?.removeAttribute("aria-activedescendant");
   }
+}
 
-  function frame() {
-    if (!active) return;
-    ctx.clearRect(0, 0, W, H);
-    const LINK = 130;
-
-    for (const p of particles) {
-      p.x += p.vx; p.y += p.vy;
-      if (p.x < 0 || p.x > W) p.vx *= -1;
-      if (p.y < 0 || p.y > H) p.vy *= -1;
-    }
-    ctx.lineWidth = 1;
-    for (let i = 0; i < particles.length; i++) {
-      for (let j = i + 1; j < particles.length; j++) {
-        const a = particles[i], b = particles[j];
-        const dx = a.x - b.x, dy = a.y - b.y;
-        const d2 = dx * dx + dy * dy;
-        if (d2 < LINK * LINK) {
-          const alpha = (1 - Math.sqrt(d2) / LINK) * 0.22;
-          ctx.strokeStyle = `rgba(45, 212, 191, ${alpha})`;
-          ctx.beginPath();
-          ctx.moveTo(a.x, a.y);
-          ctx.lineTo(b.x, b.y);
-          ctx.stroke();
-        }
-      }
-    }
-    for (const p of particles) {
-      ctx.fillStyle = "rgba(45, 212, 191, 0.55)";
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    rafId = requestAnimationFrame(frame);
+function openCommand() {
+  if (!commandOverlay) return;
+  commandOverlay.hidden = false;
+  commandOverlay.setAttribute("aria-hidden", "false");
+  document.body.classList.add("command-open");
+  if (commandInput) {
+    commandInput.value = "";
+    paintCommandResults();
+    window.requestAnimationFrame(() => commandInput.focus());
   }
+}
 
-  return {
-    setActive(isActive) {
-      if (isActive && !active) {
-        active = true;
-        if (!W) resize();
-        rafId = requestAnimationFrame(frame);
-      } else if (!isActive && active) {
-        active = false;
-        if (rafId) cancelAnimationFrame(rafId);
-        rafId = null;
-      }
-    },
-    resize,
-  };
-})();
+function closeCommand() {
+  if (!commandOverlay || commandOverlay.hidden) return;
+  commandOverlay.hidden = true;
+  commandOverlay.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("command-open");
+  commandOpen?.focus();
+}
+
+commandOpen?.addEventListener("click", openCommand);
+commandOverlay?.querySelectorAll("[data-command-close]").forEach((el) => el.addEventListener("click", closeCommand));
+commandInput?.addEventListener("input", () => paintCommandResults(commandInput.value));
+commandInput?.addEventListener("keydown", (e) => {
+  if ((e.key === "ArrowDown" || e.key === "ArrowUp") && !commandMatches.length) {
+    e.preventDefault();
+    return;
+  }
+  if (e.key === "ArrowDown") {
+    e.preventDefault();
+    commandActive = Math.min(commandActive + 1, commandMatches.length - 1);
+    syncCommandActive();
+  } else if (e.key === "ArrowUp") {
+    e.preventDefault();
+    commandActive = Math.max(commandActive - 1, 0);
+    syncCommandActive();
+  } else if (e.key === "Enter" && commandMatches[commandActive]) {
+    e.preventDefault();
+    goTo(commandMatches[commandActive].index, { force: true });
+    closeCommand();
+  }
+});
+commandOverlay?.addEventListener("keydown", (e) => {
+  if (e.key !== "Tab") return;
+  const focusable = Array.from(commandOverlay.querySelectorAll("input:not([disabled]), button:not([disabled])"));
+  if (!focusable.length) return;
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (e.shiftKey && document.activeElement === first) {
+    e.preventDefault(); last.focus();
+  } else if (!e.shiftKey && document.activeElement === last) {
+    e.preventDefault(); first.focus();
+  }
+});
 
 /* ------------------------------------------------------------
    Input handling: keys, arrows, wheel, touch swipe
    ------------------------------------------------------------ */
 document.addEventListener("keydown", (e) => {
   const tag = (e.target.tagName || "").toLowerCase();
+  if (e.key === "Escape" && commandOverlay && !commandOverlay.hidden) {
+    closeCommand();
+    return;
+  }
+  if (!commandOverlay?.hidden) return;
+  if (e.key === "/" && tag !== "input" && tag !== "textarea") {
+    e.preventDefault();
+    openCommand();
+    return;
+  }
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+    e.preventDefault();
+    openCommand();
+    return;
+  }
   if (tag === "input" || tag === "textarea" || tag === "button") return;
   if (["ArrowRight", "ArrowDown", "PageDown", " ", "Enter"].includes(e.key)) {
     e.preventDefault(); nextSlide();
@@ -270,6 +350,7 @@ navPrev.addEventListener("click", prevSlide);
 // Wheel / trackpad (debounced, ignores scrollable inner content)
 let wheelLock = false;
 document.addEventListener("wheel", (e) => {
+  if (commandOverlay && !commandOverlay.hidden) return;
   const inner = e.target.closest(".slide-inner");
   if (inner && inner.scrollHeight > inner.clientHeight + 4) {
     const atTop = inner.scrollTop <= 0;
@@ -292,6 +373,7 @@ document.addEventListener("touchstart", (e) => {
 }, { passive: true });
 document.addEventListener("touchend", (e) => {
   if (!touching) return;
+  if (commandOverlay && !commandOverlay.hidden) { touching = false; return; }
   touching = false;
   const dx = e.changedTouches[0].clientX - touchStartX;
   const dy = e.changedTouches[0].clientY - touchStartY;
@@ -305,7 +387,6 @@ document.addEventListener("touchend", (e) => {
 }, { passive: true });
 
 window.addEventListener("resize", () => {
-  heroParticles.resize();
   scheduleScrollCheck(slides[current]);
 });
 
@@ -315,13 +396,82 @@ document.querySelectorAll(".layer-card").forEach((card) => {
 });
 
 /* ------------------------------------------------------------
-   Boot
+   Boot — cinematic intro, clock, worker FX, controls
    ------------------------------------------------------------ */
 const orbitAnim = initOrbitVerification(document.getElementById("orbitCanvas"));
 initViewers();
 
-// Graceful no-JS-anim fallback: ensure first slide content visible even if GSAP late
-slides[0].classList.add("active");
+const matrixRain = initMatrixRain(document.getElementById("matrixRain"), document.getElementById("renderStatus"));
+const fxToggle = document.getElementById("fxToggle");
+const motionQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+let motionPaused = Boolean(motionQuery?.matches);
+function updateFxButton() {
+  if (!fxToggle) return;
+  fxToggle.setAttribute("aria-pressed", String(motionPaused));
+  fxToggle.setAttribute("aria-label", motionPaused ? "Resume Matrix rain animation" : "Pause Matrix rain animation");
+  const glyph = fxToggle.querySelector("span");
+  if (glyph) glyph.textContent = motionPaused ? "▶" : "Ⅱ";
+}
+updateFxButton();
+fxToggle?.addEventListener("click", () => {
+  motionPaused = !motionPaused;
+  matrixRain.setPaused(motionPaused);
+  updateFxButton();
+});
+motionQuery?.addEventListener?.("change", (event) => {
+  motionPaused = event.matches;
+  matrixRain.setPaused(motionPaused);
+  updateFxButton();
+});
+
+const systemClock = document.getElementById("systemClock");
+function updateClock() {
+  if (!systemClock) return;
+  try {
+    const time = new Intl.DateTimeFormat("en-PH", {
+      timeZone: "Asia/Manila", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false,
+    }).format(new Date());
+    systemClock.textContent = `CEBU // ${time}`;
+  } catch {
+    systemClock.textContent = "CEBU // LOCAL TIME";
+  }
+}
+updateClock();
+window.setInterval(updateClock, 1000);
+
+const terminalMessage = document.getElementById("terminalMessage");
+const terminalLines = [
+  "mapping subsurface signal",
+  "loading proposed sensor mesh",
+  "routing data / orbit → barangay",
+  "rendering concept blueprint",
+];
+let terminalLine = 0;
+if (terminalMessage) {
+  window.setInterval(() => {
+    terminalLine = (terminalLine + 1) % terminalLines.length;
+    terminalMessage.textContent = terminalLines[terminalLine];
+  }, 2800);
+}
+
+const bootScreen = document.getElementById("bootScreen");
+const skipBoot = document.getElementById("skipBoot");
+let bootDismissTimer = 0;
+function dismissBoot() {
+  if (!bootScreen || bootScreen.hidden) return;
+  if (bootDismissTimer) window.clearTimeout(bootDismissTimer);
+  bootScreen.classList.add("is-exiting");
+  bootScreen.setAttribute("aria-hidden", "true");
+  window.setTimeout(() => { bootScreen.hidden = true; }, 620);
+}
+skipBoot?.addEventListener("click", dismissBoot);
+window.setTimeout(dismissBoot, motionPaused ? 450 : 1850);
+
+document.getElementById("beginBtn")?.addEventListener("click", () => {
+  dismissBoot();
+  goTo(1);
+});
+
+// Graceful no-JS-animation fallback: make the first frame active even if GSAP is unavailable.
+slides[0]?.classList.add("active");
 goTo(0, { force: true });
-heroParticles.setActive(true);
-heroParticles.resize();

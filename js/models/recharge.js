@@ -12,13 +12,13 @@ const COL = {
   casing: 0xb8bec4,
   headworks: 0x37474f,
   pipe: 0x565f66,
-  water: 0x38bdf8,
+  water: 0x6cdfff,
   pond: 0x1d5f8a,
   school: 0xd8cfc0,
   roof: 0xb3541e,
   tank: 0x2c3a3d,
-  teal: 0x2dd4bf,
-  amber: 0xf59e0b,
+  teal: 0x68ff8e,
+  amber: 0xf3b36b,
   pvc: 0xe8ecee,
 };
 
@@ -135,7 +135,7 @@ export function createRecharge() {
   gutter.rotation.x = Math.PI / 2;
   gutter.position.set(SX + 0.48, 0.44, SZ);
   // windows
-  const winMat = std(0x9fd8cf, { emissive: 0x2dd4bf, emissiveIntensity: 0.35, roughness: 0.3 });
+  const winMat = std(0x9fd8cf, { emissive: 0x68ff8e, emissiveIntensity: 0.35, roughness: 0.3 });
   for (const wx of [-0.22, 0.1]) {
     const win = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.14, 0.02), winMat);
     win.position.set(SX + wx + 0.1, 0.26, SZ + 0.28);

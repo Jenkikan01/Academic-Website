@@ -4,12 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Project TINDIG — CSR Proposal | Daluyan Water Technologies, Inc.</title>
-<meta name="description" content="A four-layer, orbit-verified defense against land subsidence for Hagonoy, Bulacan — from space to barangay.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1c3 4 5 6.5 5 9a5 5 0 1 1-10 0c0-2.5 2-5 5-9z' fill='%232dd4bf'/%3E%3C/svg%3E">
+<meta name="description" content="Project TINDIG — a four-layer, satellite-verified proposal to defend Hagonoy, Bulacan from land subsidence.">
+<meta name="theme-color" content="#030805">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23030805'/%3E%3Cpath d='M15 16h34v7H28v7h17v20H15v-7h23v-6H21V23h-6z' fill='%2368ff8e'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./css/style.css">
+<link rel="stylesheet" href="./css/matrix-theme.css">
 <script type="importmap">
 {
   "imports": {
@@ -21,33 +23,98 @@
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
 </head>
-<body>
+<body class="no-js">
+<a class="skip-link" href="#deck">Skip to presentation</a>
 
-<!-- ======= CHROME (persistent UI) ======= -->
-<div class="wordmark" aria-hidden="true">TINDIG <span>DWT</span></div>
+<canvas class="matrix-rain" id="matrixRain" aria-hidden="true"></canvas>
+<div class="ambient-grid" aria-hidden="true"></div>
+<div class="screen-texture" aria-hidden="true"></div>
+
+<div class="boot-screen is-active" id="bootScreen" aria-hidden="false">
+  <div class="boot-terminal">
+    <div class="boot-heading"><span class="boot-mark">T/</span><span>DALUYAN // FIELD INTELLIGENCE</span><span class="boot-version">BUILD 26.09</span></div>
+    <div class="boot-log" aria-hidden="true">
+      <p><i>[00.01]</i><span class="boot-ok">OK</span> Loading the Hagonoy proposal node…</p>
+      <p><i>[00.02]</i><span class="boot-ok">OK</span> Rendering the Sentinel-1 concept layer</p>
+      <p><i>[00.03]</i><span class="boot-ok">OK</span> Sketching the orbit-to-barangay network</p>
+      <p><i>[00.04]</i><span class="boot-warn">DEMO</span> Interface simulation — no live sensors connected</p>
+    </div>
+    <div class="boot-progress"><span></span></div>
+    <div class="boot-footer"><span>LOCAL SESSION / PROPOSAL BUILD</span><button type="button" id="skipBoot">SKIP INTRO <b>↗</b></button></div>
+  </div>
+</div>
+
+<!-- Persistent command rail -->
+<header class="system-bar" aria-label="Project interface status">
+  <div class="wordmark">TINDIG <span>//</span> <b>DWT</b></div>
+  <div class="system-status"><i class="status-led" aria-hidden="true"></i><span>NETWORK BLUEPRINT READY</span><b>DEMO MODE</b></div>
+  <div class="system-meta"><span class="render-status" id="renderStatus">RENDER THREAD // STARTING</span><button class="command-trigger" id="commandOpen" type="button" aria-label="Open command deck" aria-haspopup="dialog" aria-controls="commandOverlay"><kbd>/</kbd> COMMANDS</button><time id="systemClock">CEBU // --:--:--</time></div>
+</header>
 <div class="progress-bar" aria-hidden="true"><div class="progress-fill" id="progressFill"></div></div>
 <nav class="dot-nav" id="dotNav" aria-label="Slide navigation"></nav>
-<div class="slide-counter" id="slideCounter">01 / 15</div>
-<button class="nav-arrow nav-prev" id="navPrev" aria-label="Previous slide">&#8592;</button>
-<button class="nav-arrow nav-next" id="navNext" aria-label="Next slide">&#8594;</button>
+<div class="slide-counter" id="slideCounter"><span>FRAME</span><b id="counterCurrent">01</b><i>/</i><b>15</b></div>
+<div class="deck-controls">
+  <button class="fx-toggle" id="fxToggle" type="button" aria-label="Pause Matrix rain animation" aria-pressed="false"><span aria-hidden="true">Ⅱ</span> FX</button>
+  <button class="nav-arrow nav-prev" id="navPrev" aria-label="Previous slide"><span aria-hidden="true">←</span><b>PREV</b></button>
+  <button class="nav-arrow nav-next" id="navNext" aria-label="Next slide"><span aria-hidden="true">NEXT</span><b>→</b></button>
+</div>
+<div class="route-sweep" id="routeSweep" aria-hidden="true"><span id="routeLabel">RE-ROUTING // SECTOR 01</span></div>
+
+<div class="command-overlay" id="commandOverlay" aria-hidden="true" hidden>
+  <div class="command-scrim" data-command-close></div>
+  <section class="command-palette" role="dialog" aria-modal="true" aria-labelledby="commandTitle">
+    <header class="command-head"><span id="commandTitle"><i>⌘</i> DWT COMMAND DECK</span><span>LOCAL NAVIGATION / NO NETWORK CALLS</span></header>
+    <label class="command-input-wrap"><span aria-hidden="true">&gt;_</span><input id="commandInput" type="search" autocomplete="off" spellcheck="false" placeholder="Search slides or type a number…" aria-label="Search presentation slides"></label>
+    <div class="command-results" id="commandResults" role="listbox" aria-label="Presentation slides"></div>
+    <footer class="command-foot"><span><kbd>↑</kbd><kbd>↓</kbd> SELECT</span><span><kbd>ENTER</kbd> OPEN</span><span><kbd>ESC</kbd> CLOSE</span></footer>
+  </section>
+</div>
 
 <main class="deck" id="deck">
 
   <!-- ======= SLIDE 0 · HERO ======= -->
-  <section class="slide slide-hero" data-slide="0" data-title="Hero">
-    <canvas class="hero-particles" id="heroParticles" aria-hidden="true"></canvas>
+  <section class="slide slide-hero" data-slide="0" data-title="Transmission">
     <div class="slide-inner hero-inner">
-      <p class="hero-kicker anim-in">Daluyan Water Technologies, Inc. &mdash; CSR Project Proposal</p>
-      <h1 class="hero-title anim-in">PROJECT<br><span class="teal">TINDIG</span></h1>
-      <p class="hero-sub anim-in">Tactical InSAR-guided Network for Defense against Inundation &amp; Ground-loss</p>
-      <p class="hero-tagline anim-in">&ldquo;Mula Kalawakan hanggang Barangay &mdash; From Space to Barangay.&rdquo;</p>
-      <div class="palo-stats hero-chips anim-in">
-        <span class="stat-chip glass">Hagonoy, Bulacan</span>
-        <span class="stat-chip glass">30 months</span>
-        <span class="stat-chip glass amber">&#8369;24,150,000</span>
-        <span class="stat-chip glass">September 2026</span>
+      <div class="hero-copy">
+        <p class="hero-kicker anim-in"><span class="signal-dot" aria-hidden="true"></span>Daluyan Water Technologies, Inc. <i>//</i> CSR proposal</p>
+        <p class="hero-overline anim-in">FIELD NETWORK 01 <span>•</span> HAGONOY, BULACAN <span>•</span> SEPTEMBER 2026</p>
+        <h1 class="hero-title anim-in"><span class="hero-title-prefix">PROJECT / 01</span><span class="hero-glitch" data-text="TINDIG">TINDIG</span></h1>
+        <p class="hero-sub anim-in">Tactical InSAR-guided Network for Defense against Inundation &amp; Ground-loss</p>
+        <p class="hero-tagline anim-in">&ldquo;Mula Kalawakan hanggang Barangay <i>—</i> From Space to Barangay.&rdquo;</p>
+        <div class="palo-stats hero-chips anim-in">
+          <span class="stat-chip glass"><i class="chip-led"></i> Hagonoy, Bulacan</span>
+          <span class="stat-chip glass">30 months</span>
+          <span class="stat-chip glass amber">&#8369;24,150,000</span>
+          <span class="stat-chip glass">Proposal / 2026</span>
+        </div>
+        <div class="hero-actions anim-in">
+          <button class="launch-button" id="beginBtn" type="button">
+            <span class="launch-icon" aria-hidden="true">↳</span>
+            <span class="launch-label"><small>OPEN THE BRIEFING</small><strong>Enter the network</strong></span>
+            <span class="launch-arrow" aria-hidden="true">↗</span>
+          </button>
+          <p class="hero-hint"><span class="hint-key">→</span> or use arrows / swipe to navigate</p>
+        </div>
       </div>
-      <div class="hero-hint anim-in"><span class="hint-key">&rarr;</span> Press to begin</div>
+
+      <aside class="hero-terminal anim-in" aria-label="Illustrative system blueprint. This is a proposal, not a live sensor feed.">
+        <div class="terminal-head"><span><i class="terminal-led"></i> SYSTEM BLUEPRINT</span><span class="terminal-tag">CONCEPT MODE</span></div>
+        <div class="terminal-location"><span>DEPLOYMENT ZONE</span><strong>HAGONOY <b>//</b> BULACAN</strong></div>
+        <div class="radar-window" aria-hidden="true">
+          <div class="radar-crosshair"></div><div class="radar-sweep"></div>
+          <i class="radar-ping ping-a"></i><i class="radar-ping ping-b"></i><i class="radar-ping ping-c"></i>
+          <span class="radar-label radar-label-a">ORBITAL PASS</span><span class="radar-label radar-label-b">PILOT ZONE</span>
+          <span class="radar-coordinate">APPROX. ZONE · 14°50′N / 120°44′E</span>
+        </div>
+        <div class="terminal-modules">
+          <div class="terminal-row"><span class="module-index">L1</span><span class="module-name"><b>BANTAY-LUPA</b><small>Sentinel-1 / InSAR</small></span><span class="module-state">PLANNED</span></div>
+          <div class="terminal-row"><span class="module-index">L2</span><span class="module-name"><b>BANTAY-TUBIG</b><small>Wells / LoRaWAN</small></span><span class="module-state">PLANNED</span></div>
+          <div class="terminal-row"><span class="module-index">L3</span><span class="module-name"><b>UTAK-TUBIG</b><small>MODFLOW 6 / ML</small></span><span class="module-state">PLANNED</span></div>
+          <div class="terminal-row"><span class="module-index">L4</span><span class="module-name"><b>SIBOL</b><small>Managed recharge</small></span><span class="module-state">PLANNED</span></div>
+        </div>
+        <div class="terminal-command"><span>root@dwt:~$</span><b id="terminalMessage">mapping subsurface signal</b><i aria-hidden="true"></i></div>
+        <div class="terminal-foot"><span>◉ VISUALIZATION ONLY / NO LIVE TELEMETRY</span><b>PROPOSAL BUILD</b></div>
+      </aside>
     </div>
   </section>
 

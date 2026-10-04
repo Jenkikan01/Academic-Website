@@ -9,12 +9,12 @@ const COL = {
   core: 0x1a2428,
   coreDark: 0x111a1d,
   panel: 0x22333a,
-  teal: 0x2dd4bf,
-  blue: 0x38bdf8,
-  amber: 0xf59e0b,
-  voxelA: 0x2dd4bf,
-  voxelB: 0x38bdf8,
-  voxelHot: 0xf59e0b,
+  teal: 0x68ff8e,
+  blue: 0x6cdfff,
+  amber: 0xf3b36b,
+  voxelA: 0x68ff8e,
+  voxelB: 0x6cdfff,
+  voxelHot: 0xf3b36b,
   iconBody: 0x9fb4bd,
   iconDark: 0x37474f,
 };
@@ -248,32 +248,32 @@ export function createAICore() {
     bctx.clearRect(0, 0, 640, 360);
     bctx.fillStyle = 'rgba(11,19,21,0.6)';
     bctx.fillRect(4, 4, 632, 352);
-    bctx.strokeStyle = 'rgba(45,212,191,0.9)';
+    bctx.strokeStyle = 'rgba(104,255,142,0.9)';
     bctx.lineWidth = 3;
     bctx.strokeRect(4, 4, 632, 352);
-    bctx.fillStyle = 'rgba(45,212,191,0.9)';
+    bctx.fillStyle = 'rgba(104,255,142,0.9)';
     bctx.fillRect(4, 4, 30, 6); bctx.fillRect(4, 4, 6, 30);
     bctx.fillRect(600, 350, 32, 6); bctx.fillRect(630, 326, 6, 30);
     bctx.textAlign = 'left';
-    bctx.fillStyle = 'rgba(45,212,191,0.95)';
+    bctx.fillStyle = 'rgba(104,255,142,0.95)';
     bctx.font = '600 24px "Space Grotesk", sans-serif';
     bctx.fillText('UTAK-TUBIG · EXTRACTION BUDGET', 30, 48);
     bctx.fillStyle = 'rgba(231,242,240,0.7)';
     bctx.font = '400 20px "Inter", sans-serif';
     bctx.fillText(season.label, 30, 82);
-    bctx.fillStyle = '#2dd4bf';
+    bctx.fillStyle = '#68ff8e';
     bctx.font = '700 66px "Space Grotesk", sans-serif';
     bctx.fillText(shown.toLocaleString('en-US') + ' m³', 30, 165);
     // gauge
     bctx.fillStyle = 'rgba(255,255,255,0.08)';
     bctx.fillRect(30, 200, 580, 26);
-    bctx.fillStyle = frac > 0.9 ? '#f59e0b' : '#2dd4bf';
+    bctx.fillStyle = frac > 0.9 ? '#f3b36b' : '#68ff8e';
     bctx.fillRect(30, 200, 580 * Math.min(frac, 1), 26);
     bctx.fillStyle = 'rgba(231,242,240,0.75)';
     bctx.font = '400 18px "Inter", sans-serif';
     bctx.fillText('MODFLOW 6 + LSTM forecast · RF/XGBoost zonation (AUC 0.99)', 30, 258);
     bctx.fillText('Monthly cap → barangay ordinance → SMS to permittees', 30, 290);
-    bctx.fillStyle = 'rgba(245,158,11,0.9)';
+    bctx.fillStyle = 'rgba(243,179,107,0.9)';
     bctx.font = '600 18px "Space Grotesk", sans-serif';
     bctx.fillText('100% open-source — ₱0 license cost', 30, 332);
     budTex.needsUpdate = true;
