@@ -22,8 +22,8 @@ const MODEL_REGISTRY = {
   "recharge":       { file: "./models/recharge.js",       factory: "createRecharge" },
 };
 
-const BG_COLOR = 0x0b1315;
-const TEAL = 0x2dd4bf;
+const BG_COLOR = 0x040907;
+const TEAL = 0x68ff8e;
 const FOV = 45;
 const FIT_MARGIN = 1.18;    // bounding-sphere margin: model never touches an edge
 const BIAS_PX = 40;         // model rides ~40px high to clear the bottom control strip
@@ -120,7 +120,7 @@ function buildScene(state) {
   const camera = new THREE.PerspectiveCamera(FOV, 1, 0.1, 120);
 
   // Lighting rig on top of the IBL: ambient + hemisphere + key + rim +
-  // front fill, tuned so graphite shells read against #0b1315 without
+  // front fill, tuned so graphite shells read against #040907 without
   // blowing out now that the environment contributes base illumination
   scene.add(new THREE.AmbientLight(0xbfe8e0, 0.55));
   scene.add(new THREE.HemisphereLight(0xbdf5ec, 0x11201f, 0.45));

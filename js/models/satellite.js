@@ -9,7 +9,7 @@ const COL = {
   busDark: 0x8a979e,
   gold: 0xd4af37,        // MLI blanket foil
   sar: 0x9fb4bd,
-  sarGrid: 0x2dd4bf,
+  sarGrid: 0x68ff8e,
   solar: 0x1e3a5f,
   solarFrame: 0x141a1e,
   topsoil: 0x4a5d3a,
@@ -17,8 +17,8 @@ const COL = {
   aquifer: 0x2b6d8f,
   water: 0x1d5f8a,
   dike: 0x5c6b4a,
-  teal: 0x2dd4bf,
-  amber: 0xf59e0b,
+  teal: 0x68ff8e,
+  amber: 0xf3b36b,
   red: 0xef4444,
   white: 0xe8ecee,
 };
@@ -300,17 +300,17 @@ export function createSatellite() {
   function drawHolo(i) {
     hctx.clearRect(0, 0, 512, 168);
     // holo frame
-    hctx.strokeStyle = 'rgba(45,212,191,0.9)';
+    hctx.strokeStyle = 'rgba(104,255,142,0.9)';
     hctx.lineWidth = 3;
     hctx.strokeRect(6, 6, 500, 156);
     hctx.fillStyle = 'rgba(11,19,21,0.55)';
     hctx.fillRect(6, 6, 500, 156);
     // corner ticks
-    hctx.fillStyle = 'rgba(45,212,191,0.9)';
+    hctx.fillStyle = 'rgba(104,255,142,0.9)';
     hctx.fillRect(6, 6, 26, 5); hctx.fillRect(6, 6, 5, 26);
     hctx.fillRect(480, 157, 26, 5); hctx.fillRect(501, 136, 5, 26);
     hctx.textAlign = 'center';
-    hctx.fillStyle = i === 1 ? '#f59e0b' : '#2dd4bf';
+    hctx.fillStyle = i === 1 ? '#f3b36b' : '#68ff8e';
     hctx.font = '700 54px "Space Grotesk", sans-serif';
     hctx.fillText(HOLO_LINES[i].big, 256, 82);
     hctx.fillStyle = 'rgba(231,242,240,0.85)';

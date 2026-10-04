@@ -7,9 +7,9 @@
    { setActive(bool) }; rAF runs only while the slide is active.
    ============================================================ */
 
-const TEAL = "#2dd4bf";
-const BLUE = "#38bdf8";
-const AMBER = "#f59e0b";
+const TEAL = "#68ff8e";
+const BLUE = "#6cdfff";
+const AMBER = "#f3b36b";
 const INK = "#e7f2f0";
 const INK_DIM = "#9db8b3";
 const INK_FAINT = "#647d78";
@@ -51,7 +51,7 @@ export function initOrbitVerification(canvas) {
     ctx.rotate(0.12);
     // solar wings
     ctx.fillStyle = "#1e3a5f";
-    ctx.strokeStyle = "rgba(56,189,248,0.7)";
+    ctx.strokeStyle = "rgba(108,223,255,0.7)";
     ctx.lineWidth = 1;
     ctx.fillRect(-3.4 * s, -0.7 * s, 2.2 * s, 1.4 * s);
     ctx.fillRect(1.2 * s, -0.7 * s, 2.2 * s, 1.4 * s);
@@ -89,11 +89,11 @@ export function initOrbitVerification(canvas) {
 
     // ground band
     const grad = ctx.createLinearGradient(0, gy - 6, 0, H);
-    grad.addColorStop(0, "rgba(45,212,191,0.10)");
+    grad.addColorStop(0, "rgba(104,255,142,0.10)");
     grad.addColorStop(1, "rgba(11,19,21,0)");
     ctx.fillStyle = grad;
     ctx.fillRect(0, gy - 6, W, H - gy + 6);
-    ctx.strokeStyle = "rgba(45,212,191,0.4)";
+    ctx.strokeStyle = "rgba(104,255,142,0.4)";
     ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.moveTo(0, gy);
@@ -122,7 +122,7 @@ export function initOrbitVerification(canvas) {
 
     // site marker pulse
     const pulse = (t * 0.8) % 1;
-    ctx.strokeStyle = `rgba(45,212,191,${0.7 * (1 - pulse)})`;
+    ctx.strokeStyle = `rgba(104,255,142,${0.7 * (1 - pulse)})`;
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.arc(siteX, gy, 6 + pulse * 26, 0, Math.PI * 2);
@@ -144,7 +144,7 @@ export function initOrbitVerification(canvas) {
     // radar pings while the satellite is overhead (phase 0.28–0.5)
     if (ph > 0.24 && ph < 0.52) {
       const beamA = 0.35 + 0.2 * Math.sin(t * 6);
-      ctx.strokeStyle = `rgba(45,212,191,${beamA})`;
+      ctx.strokeStyle = `rgba(104,255,142,${beamA})`;
       ctx.lineWidth = 1.5;
       ctx.setLineDash([5, 5]);
       ctx.beginPath();
@@ -155,7 +155,7 @@ export function initOrbitVerification(canvas) {
       // expanding interferometric rings on the ground
       for (let i = 0; i < 3; i++) {
         const rp = ((t * 1.4 + i / 3) % 1);
-        ctx.strokeStyle = `rgba(245,158,11,${0.55 * (1 - rp)})`;
+        ctx.strokeStyle = `rgba(243,179,107,${0.55 * (1 - rp)})`;
         ctx.beginPath();
         ctx.arc(siteX, gy, 5 + rp * 42, 0, Math.PI * 2);
         ctx.stroke();
@@ -175,7 +175,7 @@ export function initOrbitVerification(canvas) {
       ctx.arc(px, py, 4.5, 0, Math.PI * 2);
       ctx.fill();
       ctx.shadowBlur = 0;
-      ctx.strokeStyle = "rgba(45,212,191,0.25)";
+      ctx.strokeStyle = "rgba(104,255,142,0.25)";
       ctx.setLineDash([3, 5]);
       ctx.beginPath();
       ctx.moveTo(siteX, gy);
@@ -188,7 +188,7 @@ export function initOrbitVerification(canvas) {
     const verified = ph > 0.66;
     const gauge = verified ? Math.min((ph - 0.66) / 0.18, 1) : 0;
     ctx.fillStyle = GLASS;
-    ctx.strokeStyle = verified ? "rgba(45,212,191,0.85)" : "rgba(45,212,191,0.25)";
+    ctx.strokeStyle = verified ? "rgba(104,255,142,0.85)" : "rgba(104,255,142,0.25)";
     ctx.lineWidth = verified ? 2 : 1;
     const r = 12;
     ctx.beginPath();
@@ -243,7 +243,7 @@ export function initOrbitVerification(canvas) {
       ctx.translate(cx, cy);
       ctx.scale(back, back);
       ctx.globalAlpha = Math.min(pop * 1.6, 1);
-      ctx.fillStyle = "rgba(45,212,191,0.18)";
+      ctx.fillStyle = "rgba(104,255,142,0.18)";
       ctx.beginPath();
       ctx.arc(0, 0, 17, 0, Math.PI * 2);
       ctx.fill();
